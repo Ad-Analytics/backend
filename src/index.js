@@ -2,8 +2,10 @@ const express = require('express')
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const jwtMiddleware = require('./middlewares/jwt.middleware')
 
 const chatRoutes = require('./routes/chat.routes')
+const authRoutes = require('./routes/auth.routes')
 
 const port = process.env.PORT || 8080
 const app = express()
@@ -12,7 +14,8 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-app.use('/chat', chatRoutes)
+app.use('/chat', jwtMiddleware, chatRoutes)
+app.use('/auth', authRoutes)
 
 app.get('/', (req, res) => {
     res.status(200).send('Online')

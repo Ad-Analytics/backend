@@ -1,0 +1,36 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id         Int           @id @default(autoincrement())
+    name       String
+    email      String        @unique
+    password   String
+    created_at DateTime      @default(now())
+    updated_at DateTime      @updatedAt
+    type       UserType
+    settings   UserSettings?
+}
+
+enum UserType {
+    ADMIN
+    CUSTOMER
+}
+
+model UserSettings {
+    id              Int      @id @default(autoincrement())
+    user            User     @relation(fields: [user_id], references: [id])
+    user_id         Int      @unique
+    created_at      DateTime @default(now())
+    updated_at      DateTime @updatedAt
+    fb_api_key      String?
+    fb_api_secret   String?
+    fb_account_id   String?
+    fb_access_token String?
+}

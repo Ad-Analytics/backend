@@ -4,32 +4,25 @@ generator client {
 
 datasource db {
     provider = "mysql"
-    url      = env("DATABASE_URL")
+    url      = env("DATABASE_ADANALYTICS_URL")
 }
 
 model User {
-    id                    Int                              @id @default(autoincrement())
-    name                  String
-    email                 String                           @unique
-    password              String
-    created_at            DateTime                         @default(now())
-    updated_at            DateTime                         @updatedAt
-    type                  UserType
-    settings              UserSettings?
-    fb_insights           FacebookAdInsights[]
-    fb_actions            FacebookAdInsightsActions[]
-    fb_action_values      FacebookAdInsightsActionValues[]
-    gl_ads_custom_reports GoogleAdsCustomReport[]
-}
-
-enum UserType {
-    ADMIN
-    CUSTOMER
+    id                           Int                            @id @default(autoincrement())
+    name                         String
+    email                        String                         @unique
+    password                     String
+    created_at                   DateTime                       @default(now())
+    updated_at                   DateTime                       @updatedAt
+    type                         UserType
+    settings                     UserSettings?
+    facebook_ad_insights         facebook_ad_insights[]
+    facebook_ad_insights_actions facebook_ad_insights_actions[]
+    googleads_custom_report      googleads_custom_report[]
 }
 
 model UserSettings {
     id              Int      @id @default(autoincrement())
-    user            User     @relation(fields: [user_id], references: [id])
     user_id         Int      @unique
     created_at      DateTime @default(now())
     updated_at      DateTime @updatedAt
@@ -37,86 +30,83 @@ model UserSettings {
     fb_api_secret   String?
     fb_account_id   String?
     fb_access_token String?
+    user            User     @relation(fields: [user_id], references: [id])
 }
 
-model FacebookAdInsightsActions {
-    id            Int      @id @default(autoincrement())
-    metric_date   DateTime
-    account_id    String
-    account_name  String
-    adset_id      String
-    campaign_id   String
-    campaign_name String
-    action_value  Float?
-    action_type   String
-    region        String?
-    country       String?
-    user_id       Int
-    user          User     @relation(fields: [user_id], references: [id])
+model facebook_ad_insights {
+    id                              Int       @id @default(autoincrement())
+    account_id                      String?   @db.VarChar(255)
+    metric_date                     DateTime? @db.DateTime(0)
+    account_name                    String?   @db.VarChar(255)
+    adset_id                        String?   @db.VarChar(255)
+    campaign_id                     String?   @db.VarChar(255)
+    frequency                       Float?    @db.Float
+    estimated_ad_recallers          Float?    @db.Float
+    estimated_ad_recall_rate        Float?    @db.Float
+    cost_per_estimated_ad_recallers Float?    @db.Float
+    inline_link_clicks              Float?    @db.Float
+    unique_inline_link_clicks       Float?    @db.Float
+    impressions                     Float?    @db.Float
+    campaign_name                   String?   @db.VarChar(255)
+    unique_clicks                   Float?    @db.Float
+    adset_name                      String?   @db.VarChar(255)
+    objective                       String?   @db.VarChar(255)
+    clicks                          Float?    @db.Float
+    ad_id                           String?   @db.VarChar(255)
+    reach                           Float?    @db.Float
+    ad_name                         String?   @db.VarChar(255)
+    account_currency                String?   @db.VarChar(255)
+    inline_post_engagement          Float?    @db.Float
+    spend                           Float?    @db.Float
+    region                          String?   @db.VarChar(255)
+    country                         String?   @db.VarChar(255)
+    user                            User?     @relation(fields: [userId], references: [id])
+    userId                          Int?
 }
 
-model FacebookAdInsights {
-    id                              Int      @id @default(autoincrement())
-    metric_date                     DateTime
-    account_id                      String
-    account_name                    String
-    adset_id                        String
-    campaign_id                     String
-    campaign_name                   String
-    estimated_ad_recallers          Int?
-    estimated_ad_recall_rate        Float?
-    cost_per_estimated_ad_recallers Float?
-    inline_link_clicks              Int?
-    cost_per_inline_link_click      Float?
-    impressions                     Int
-    unique_inline_link_clicks       Int?
-    frequency                       Float?
-    clicks                          Int?
-    cpc                             Float?
-    ctr                             Float?
-    reach                           Int
-    spend                           Float
-    account_currency                String?
-    inline_post_engagement          Int?
-    region                          String?
-    country                         String?
-    user_id                         Int
-    user                            User     @relation(fields: [user_id], references: [id])
-}
-
-model FacebookAdInsightsActionValues {
-    id                        Int      @id @default(autoincrement())
-    metric_date               DateTime
-    account_id                String
-    account_name              String
-    adset_id                  String
-    campaign_id               String
-    campaign_name             String
-    action_values_value       Float?
-    action_values_7d_view     Float?
-    action_values_7d_click    Float?
-    action_values_28d_view    Float?
-    action_values_28d_click   Float?
-    action_values_action_type String
-    region                    String?
-    country                   String?
-    user_id                   Int
-    user                      User     @relation(fields: [user_id], references: [id])
-}
-
-model GoogleAdsCustomReport {
+model facebook_ad_insights_actions {
     id                  Int       @id @default(autoincrement())
-    kdd_account_id      String?
-    adgroupad_ad_name   String?
-    adgroup_id          Float?
-    adgroup_name        String?
-    segments_date       DateTime?
-    campaign_id         Float?
-    campaign_name       String?
-    adgroupad_ad_id     Float?
-    metrics_cost        Float?
-    metrics_clicks      Float?
-    metrics_impressions Float?
-    user_id             Int
-    user                User      @relation(fields: [user_id], references: [id])
+    metric_date         DateTime? @db.DateTime(0)
+    account_id          String?   @db.VarChar(255)
+    account_name        String?   @db.VarChar(255)
+    adset_id            String?   @db.VarChar(255)
+    campaign_id         String?   @db.VarChar(255)
+    campaign_name       String?   @db.VarChar(255)
+    adset_name          String?   @db.VarChar(255)
+    ad_id               String?   @db.VarChar(255)
+    ad_name             String?   @db.VarChar(255)
+    actions_value       Float?    @db.Float
+    actions_1d_view     Float?    @db.Float
+    actions_7d_view     Float?    @db.Float
+    actions_28d_view    Float?    @db.Float
+    actions_1d_click    Float?    @db.Float
+    actions_7d_click    Float?    @db.Float
+    actions_28d_click   Float?    @db.Float
+    actions_action_type String?   @db.VarChar(255)
+    region              String?   @db.VarChar(255)
+    country             String?   @db.VarChar(255)
+    user                User?     @relation(fields: [userId], references: [id])
+    userId              Int?
+}
+
+model googleads_custom_report {
+    id                  Int       @id @default(autoincrement())
+    kdd_account_id      String?   @db.VarChar(255)
+    adgroupad_ad_name   String?   @db.VarChar(255)
+    adgroup_id          Float?    @db.Float
+    adgroup_name        String?   @db.VarChar(255)
+    segments_date       DateTime? @db.DateTime(0)
+    campaign_id         Float?    @db.Float
+    campaign_name       String?   @db.VarChar(255)
+    adgroupad_ad_id     Float?    @db.Float
+    metrics_cost        Float?    @db.Float
+    metrics_clicks      Float?    @db.Float
+    metrics_impressions Float?    @db.Float
+    user                User?     @relation(fields: [userId], references: [id])
+    userId              Int?
+}
+
+enum UserType {
+    ADMIN
+    CUSTOMER
 }

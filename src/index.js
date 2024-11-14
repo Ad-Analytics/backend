@@ -7,6 +7,7 @@ const jwtMiddleware = require('./middlewares/jwt.middleware')
 const chatRoutes = require('./routes/chat.routes')
 const authRoutes = require('./routes/auth.routes')
 const userRoutes = require('./routes/user.routes')
+const metricsRoutes = require('./routes/metrics.routes')
 
 const port = process.env.PORT || 8080
 const app = express()
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/chat', jwtMiddleware, chatRoutes)
 app.use('/user', jwtMiddleware, userRoutes)
+app.use('/metrics', jwtMiddleware, metricsRoutes)
 app.use('/auth', authRoutes)
 
 app.get('/', (req, res) => {
